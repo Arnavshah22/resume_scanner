@@ -2,3 +2,5 @@ Flask
 scikit-learn
 pdfminer.six
 python-docx
+sentence-transformers
+
