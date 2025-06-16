@@ -1,9 +1,14 @@
-import re
+
 import spacy
 
-# Load English model for NER
-nlp = spacy.load("en_core_web_sm")
-
+# Use get_package_path fallback if needed
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    from spacy.cli import download
+    download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
+    
 # Skill keywords to detect from resume
 SKILL_KEYWORDS = {
     'python', 'laravel', 'php'
