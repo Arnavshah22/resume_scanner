@@ -5,8 +5,11 @@ from resumer_parser import extract_text
 from scorer import calculate_similarity
 from extractor import extract_contact_info
 from flask_cors import CORS
+from flask_ngrok import run_with_ngrok
 
 app = Flask(__name__)
+run_with_ngrok(app)  # Enables ngrok for public URL
+
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 CORS(app)
@@ -41,10 +44,10 @@ def scan_resume():
         if not resume_text:
             return jsonify({'error': 'Text extraction failed'}), 500
 
-        # Extract contact info (name, email, phone, skills, address, experience)
+        # Extract contact info
         contact_info = extract_contact_info(resume_text, filename)
 
-        # Calculate composite match score
+        # Calculate score
         score_breakdown = calculate_similarity(
             resume_text,
             job_description,
@@ -54,18 +57,17 @@ def scan_resume():
 
         final_score = score_breakdown["final_score"]
 
-        # Fit logic based on final_score
+        # Determine fit
         if final_score >= 75:
             fit = "Strong Fit"
-            summary = "The resume strongly matches the job description. The candidate is highly suitable for the position."
+            summary = "The resume strongly matches the job description. The candidate is highly suitable."
         elif final_score >= 45:
             fit = "Moderate Fit"
-            summary = "The resume likely matches the job description. The candidate may be suitable with some training or support."
+            summary = "The resume somewhat matches the job description. The candidate may need some support."
         else:
             fit = "Weak Fit"
-            summary = "The resume does not closely match the job description. The candidate may not be an ideal fit."
+            summary = "The resume does not closely match. The candidate may not be ideal for this role."
 
-        # Final response
         return jsonify({
             'match_score': final_score,
             'fit': fit,
@@ -78,7 +80,5 @@ def scan_resume():
         if os.path.exists(file_path):
             os.remove(file_path)
 
-
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run()
