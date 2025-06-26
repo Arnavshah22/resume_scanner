@@ -793,6 +793,14 @@ def display_analytics():
 
 def main():
     """Main application function with enhanced UI"""
+    # Initialize session state variables if not present
+    if "scan_history" not in st.session_state:
+        st.session_state["scan_history"] = []
+    if "current_scan" not in st.session_state:
+        st.session_state["current_scan"] = None
+    if "show_results" not in st.session_state:
+        st.session_state["show_results"] = False
+    
     initialize_session_state()
     
     # Custom sidebar with navigation
