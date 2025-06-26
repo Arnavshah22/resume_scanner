@@ -2,7 +2,7 @@ import os
 import logging
 from pathlib import Path
 from dotenv import load_dotenv
-import requests
+# import requests  # No longer needed
 
 # Load environment variables from .env file
 load_dotenv()
@@ -17,25 +17,12 @@ UPLOAD_FOLDER = Path("uploads")
 ALLOWED_EXTENSIONS = {'pdf', 'docx', 'doc'}
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 
-# Hardcoded Groq API Key (user provided)
-GROQ_API_KEY = "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"
-
 # AI Model Configuration
 SENTENCE_TRANSFORMER_MODEL = "BAAI/bge-large-en-v1.5"
 SPACY_MODEL = "en_core_web_sm"
 
 # AI Summary API Configuration
-ENABLE_AI_SUMMARY = True
-AI_SUMMARY_PROVIDER = "groq"  # Options: "openrouter", "groq"
-AI_SUMMARY_MODEL = "anthropic/claude-3-haiku"  # Fast and cost-effective
-
-# OpenRouter Configuration
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
-OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-
-# Groq Configuration  
-GROQ_BASE_URL = "https://api.groq.com/openai/v1"
-GROQ_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"  # Correct model name from Groq docs
+ENABLE_AI_SUMMARY = False  # No API usage
 
 # Summary Generation Settings
 SUMMARY_MAX_TOKENS = 500
@@ -146,25 +133,4 @@ ENABLE_ANALYTICS = os.getenv("ENABLE_ANALYTICS", "True").lower() == "true"
 
 # Performance Configuration
 MAX_CONCURRENT_SCANS = 5
-MODEL_CACHE_SIZE = 100
-
-# Test Groq API
-api_key = os.getenv("GROQ_API_KEY")
-print("API Key loaded:", repr(api_key))
-
-url = "https://api.groq.com/openai/v1/chat/completions"
-headers = {
-    "Content-Type": "application/json",
-    "Authorization": f"Bearer {api_key}"
-}
-data = {
-    "model": "meta-llama/llama-4-scout-17b-16e-instruct",
-    "messages": [{
-        "role": "user",
-        "content": "Explain the importance of fast language models"
-    }]
-}
-print("Model:", data["model"])
-response = requests.post(url, headers=headers, json=data)
-print("Status code:", response.status_code)
-print("Response:", response.text) 
+MODEL_CACHE_SIZE = 100 
